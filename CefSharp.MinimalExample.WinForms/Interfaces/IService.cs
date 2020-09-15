@@ -21,6 +21,8 @@ namespace CefSharp.MinimalExample.WinForms.Interfaces
         object GetParsedResponse(string html);
         void SaveItemsToCsvFile(object items);
         void CheckForConditionOfBrowser(object e);
+        bool IsNeedToReload();
+
 
 
     }

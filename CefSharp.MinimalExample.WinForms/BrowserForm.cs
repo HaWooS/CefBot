@@ -92,6 +92,14 @@ namespace CefSharp.MinimalExample.WinForms
       
         }
 
+        public void Reload()
+        {
+            this.InvokeOnUiThreadIfRequired(() =>
+            {
+                browser.Reload();
+            });
+        }
+
 
         private void OnIsBrowserInitializedChanged(object sender, EventArgs e)
         {
@@ -141,8 +149,14 @@ namespace CefSharp.MinimalExample.WinForms
                     browser.ExecuteScriptAsyncWhenPageLoaded(script);
                     if (script.Equals(_service.GetRedirectScript()))
                     {
+                        //_service.CheckForConditionOfBrowser(sender);
                         //if executed script is redirecting browser to subsite with data to download, then set the flag of content avaiability to true
                         CredentialProvider.IsContentToDownloadAvailable = true;
+                        if (_service.IsNeedToReload())
+                        {
+                            Reload();
+                        }
+                        
                     }
                 }
                 else
@@ -168,12 +182,16 @@ namespace CefSharp.MinimalExample.WinForms
                         browser.GetSourceAsync().ContinueWith(taskHtml =>
                         {
                             var html = taskHtml.Result;
-                            var discountItems = (List<string>)_service.GetParsedResponse(html);
+                            var itemsToSave = (List<string>)_service.GetParsedResponse(html);
                             //check if web document contains some items matching discount conditions, if UI change then throw exception, if not then return list of items on discount
-                            if (discountItems.Capacity != 0)
+                            if (itemsToSave.Capacity != 0)
                             {
-                                _service.SaveItemsToCsvFile(discountItems);
+                                _service.SaveItemsToCsvFile(itemsToSave);
                                 CredentialProvider.IsContentToDownloadAvailable = false;
+                                if (_service.IsNeedToReload())
+                                {
+                                    Reload();
+                                }
                             }
                             else
                             {

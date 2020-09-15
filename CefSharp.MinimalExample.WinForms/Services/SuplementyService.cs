@@ -22,7 +22,6 @@ namespace CefSharp.MinimalExample.WinForms.Services
         private readonly string logoutConfirmationUrl = "https://suplementy.pl/login.php?operation=logout";
         private Stack<object> actions;
         private List<string> listOfItemsOnDiscount;
-        private List<string> listOfAllowedSubsites;
 
         private Dictionary<string, Exception> forbiddenSubsites;
 
@@ -146,6 +145,11 @@ namespace CefSharp.MinimalExample.WinForms.Services
                 }
             }
             
+        }
+
+        public bool IsNeedToReload()
+        {
+            return false;
         }
     }
 }

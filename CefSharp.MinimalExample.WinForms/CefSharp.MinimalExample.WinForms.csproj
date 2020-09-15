@@ -77,6 +77,7 @@
       <HintPath>..\packages\System.ValueTuple.4.4.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
@@ -102,7 +103,7 @@
     </Compile>
     <Compile Include="Scheduling\Scheduler.cs" />
     <Compile Include="Scheduling\SchedulerService.cs" />
-    <Compile Include="Services\AliexpressService.cs" />
+    <Compile Include="Services\MpcForumService.cs" />
     <Compile Include="Services\SuplementyService.cs" />
     <Compile Include="Utilities\CredentialProvider.cs" />
   </ItemGroup>

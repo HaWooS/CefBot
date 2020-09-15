@@ -71,9 +71,9 @@ namespace CefSharp.MinimalExample.WinForms
                 {
                     browser = new BrowserForm(endFunctionDelegate, settings, new SuplementyService());
                 }
-                else if (website.Equals("https://pl.aliexpress.com/"))
+                else if (website.Equals("https://www.mpcforum.pl/login"))
                 {
-                    browser = new BrowserForm(endFunctionDelegate, settings, new AliexpressService());
+                    browser = new BrowserForm(endFunctionDelegate, settings, new MpcForumService());
                 }
                 else
                 {
