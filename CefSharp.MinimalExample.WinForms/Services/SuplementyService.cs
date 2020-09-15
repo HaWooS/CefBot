@@ -2,6 +2,7 @@
 using CefSharp.MinimalExample.WinForms.Exceptions;
 using CefSharp.MinimalExample.WinForms.Interfaces;
 using CefSharp.MinimalExample.WinForms.Utilities;
+using CefSharp.WinForms;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -132,7 +133,7 @@ namespace CefSharp.MinimalExample.WinForms.Services
             }
         }
 
-        public void CheckForConditionOfBrowser(object e)
+        public void CheckForConditionOfBrowser(object e, object browser)
         {
             var browserEvent = (FrameLoadEndEventArgs)e;
             foreach(KeyValuePair<string,Exception> subsiteLink in forbiddenSubsites)

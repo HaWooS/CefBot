@@ -1,6 +1,8 @@
-﻿using CefSharp.MinimalExample.WinForms.Exceptions;
+﻿using CefSharp.MinimalExample.WinForms.Errors;
+using CefSharp.MinimalExample.WinForms.Exceptions;
 using CefSharp.MinimalExample.WinForms.Interfaces;
 using CefSharp.MinimalExample.WinForms.Utilities;
+using CefSharp.WinForms;
 using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
@@ -16,12 +18,15 @@ namespace CefSharp.MinimalExample.WinForms.Services
     class MpcForumService : IService
     {
         private readonly string siteUrl = "https://www.mpcforum.pl/login";
+        private readonly string errorLoginUrl = "https://www.mpcforum.pl/login/";
 
         private Stack<object> actions;
         private List<string> listOfPostsToSave { get; set; }
         private List<string> listOfTitles { get; set; }
         private List<string> listOfLinks { get; set; }
 
+        private Dictionary<string, Exception> forbiddenSubsites;
+        public InvalidCredentialsException invalidCredentialsExceltpions { get; }
         public MpcForumService()
         {
             this.actions = new Stack<object>();
@@ -33,6 +38,11 @@ namespace CefSharp.MinimalExample.WinForms.Services
             actions.Push(GetDownloadDataScript());
             actions.Push(GetRedirectScript());
             actions.Push(GetLoggingInScript());
+
+            //dictionary forbidden subsites for CheckForConditionOfBrowser method that checks the condition of flow in browser
+            //dictionary determines which subsites are associated with operations ended due to error and which exception is assigned to each error
+            this.forbiddenSubsites = new Dictionary<string, Exception>();
+            this.forbiddenSubsites.Add(errorLoginUrl, new InvalidCredentialsException(CredentialProvider.GetUsername(), CredentialProvider.GetPassword()));
         }
 
         public string GetSiteUrl() { return siteUrl; }
@@ -46,8 +56,8 @@ namespace CefSharp.MinimalExample.WinForms.Services
         {
             CredentialProvider.stringBuilder.Clear();
             CredentialProvider.stringBuilder.AppendLine("document.getElementsByClassName('button_button--sYDKO details_save--3nDG7')[0].click();");
-            CredentialProvider.stringBuilder.AppendLine("document.getElementById('auth').value='amok9134';");
-            CredentialProvider.stringBuilder.AppendLine("document.getElementById('password').value='ee40c4e0e6e6990';");
+            CredentialProvider.stringBuilder.AppendLine("document.getElementById('auth').value='"+CredentialProvider.GetUsername()+"';");
+            CredentialProvider.stringBuilder.AppendLine("document.getElementById('password').value='"+ CredentialProvider.GetPassword()+"';");
             CredentialProvider.stringBuilder.AppendLine("document.getElementById('elSignIn_submit').click();");
             var loggingInScript = CredentialProvider.stringBuilder.ToString();
             return loggingInScript;
@@ -146,9 +156,19 @@ namespace CefSharp.MinimalExample.WinForms.Services
             throw new NotImplementedException();
         }
 
-        public void CheckForConditionOfBrowser(object e)
+        public void CheckForConditionOfBrowser(object e, object browser)
         {
-          //in that case we don't have to check for any condition
+            var webBrowser = (ChromiumWebBrowser)browser;
+            if(webBrowser.Address.Equals("https://www.mpcforum.pl/login/"))
+            {
+                foreach (KeyValuePair<string, Exception> subsiteLink in forbiddenSubsites)
+                {
+                    //if url address points to address in list of forbidden subsites, then check for error and throw new exception
+                        var excep = (InvalidCredentialsException)subsiteLink.Value;
+                        throw new Exception(excep.Name);
+                }
+            }
+
         }
 
         public string GetErrorLoginUrl()

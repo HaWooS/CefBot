@@ -173,7 +173,7 @@ namespace CefSharp.MinimalExample.WinForms
         {
             if (e.Frame.IsMain)
             {
-                _service.CheckForConditionOfBrowser(e);
+                _service.CheckForConditionOfBrowser(e, browser);
                 //if the flag point to site with discounts, try to download all items on discount
                 if (CredentialProvider.IsContentToDownloadAvailable==true)
                 {
@@ -203,7 +203,6 @@ namespace CefSharp.MinimalExample.WinForms
                     {
                        throw new GetItemsOnDiscountException("Error during downloading items on discount");
                     }
-
                 }
                
             }

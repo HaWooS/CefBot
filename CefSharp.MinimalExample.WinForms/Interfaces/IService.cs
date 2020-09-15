@@ -20,7 +20,7 @@ namespace CefSharp.MinimalExample.WinForms.Interfaces
         string GetLogoutConfirmationUrl();
         object GetParsedResponse(string html);
         void SaveItemsToCsvFile(object items);
-        void CheckForConditionOfBrowser(object e);
+        void CheckForConditionOfBrowser(object e, object browser);
         bool IsNeedToReload();
 
 
